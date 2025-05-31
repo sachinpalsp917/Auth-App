@@ -4,6 +4,8 @@ import connectToDatabase from "./config/db";
 import { APP_ORIGIN, NODE_ENV, PORT } from "./constants/env";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import errorhandler from "./middleware/errorhandler";
+import catchError from "./utils/catchErrors";
 
 const app = express();
 
@@ -17,12 +19,17 @@ app.use(
 );
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    status: "healthy",
-  });
-});
+app.get(
+  "/",
+  catchError(async (req, res, next) => {
+    throw new Error("This is a test error");
+    return res.status(200).json({
+      status: "healthy",
+    });
+  })
+);
 
+app.use(errorhandler);
 app.listen(3000, async () => {
   console.log(`Server running on port: ${PORT} in ${NODE_ENV} enviourment`);
   await connectToDatabase();
