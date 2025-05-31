@@ -19,4 +19,6 @@ export const registerHandler = catchError(async (req, res) => {
     ...req.body,
     userAgent: req.headers["user-agent"],
   });
+
+  //call service
 });
